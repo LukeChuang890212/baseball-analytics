@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ming-Ju (Luke) Chuang — Baseball Data Analyst</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0e17;
+      --bg-card: #111827;
+      --bg-card-hover: #1a2332;
+      --accent-red: #e94560;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-gold: #f59e0b;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: #1e293b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ─── Navigation ─── */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      background: rgba(10, 14, 23, 0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      font-weight: 800; font-size: 1.1em;
+      background: linear-gradient(135deg, var(--accent-red), var(--accent-blue));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      color: var(--text-secondary); text-decoration: none;
+      font-size: 0.9em; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text-primary); }
+
+    /* ─── Hero ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 120px 40px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 800px 600px at 20% 50%, rgba(233,69,96,0.08), transparent),
+        radial-gradient(ellipse 600px 400px at 80% 30%, rgba(59,130,246,0.06), transparent);
+    }
+    .hero-content {
+      max-width: 900px; position: relative; z-index: 1;
+      text-align: center;
+    }
+    .hero-tag {
+      display: inline-block;
+      background: rgba(233,69,96,0.15); color: var(--accent-red);
+      padding: 6px 18px; border-radius: 20px;
+      font-size: 0.85em; font-weight: 600;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      margin-bottom: 24px;
+      border: 1px solid rgba(233,69,96,0.3);
+    }
+    .hero h1 {
+      font-size: 3.8em; font-weight: 900;
+      line-height: 1.1; margin-bottom: 20px;
+      background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent-red), var(--accent-blue));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      font-size: 1.25em; color: var(--text-secondary);
+      line-height: 1.8; max-width: 700px; margin: 0 auto 40px;
+    }
+    .hero-stats {
+      display: flex; justify-content: center; gap: 48px;
+      margin-top: 40px;
+    }
+    .hero-stat {
+      text-align: center;
+    }
+    .hero-stat-num {
+      font-size: 2.4em; font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      background: linear-gradient(135deg, var(--accent-red), var(--accent-gold));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-stat-label {
+      font-size: 0.8em; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    /* ─── Sections ─── */
+    section { padding: 100px 40px; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      display: inline-block;
+      font-size: 0.8em; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 2px;
+      color: var(--accent-red);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: 2.4em; font-weight: 800;
+      margin-bottom: 16px;
+    }
+    .section-desc {
+      color: var(--text-secondary); font-size: 1.1em;
+      max-width: 650px; margin-bottom: 50px; line-height: 1.8;
+    }
+
+    /* ─── About ─── */
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+      align-items: start;
+    }
+    .about-text p {
+      color: var(--text-secondary); line-height: 1.9;
+      margin-bottom: 20px; font-size: 1.05em;
+    }
+    .about-text strong { color: var(--text-primary); }
+    .about-highlights {
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .highlight-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px 24px;
+      transition: all 0.3s;
+    }
+    .highlight-card:hover {
+      border-color: var(--accent-red);
+      transform: translateX(4px);
+    }
+    .highlight-icon { font-size: 1.4em; margin-bottom: 8px; }
+    .highlight-title {
+      font-weight: 700; font-size: 1em; margin-bottom: 4px;
+    }
+    .highlight-desc {
+      font-size: 0.88em; color: var(--text-muted); line-height: 1.6;
+    }
+
+    /* ─── Toolkit ─── */
+    .toolkit-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    .toolkit-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .toolkit-item:hover {
+      border-color: var(--accent-blue);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+    }
+    .toolkit-name {
+      font-weight: 700; font-size: 1em; margin-bottom: 6px;
+    }
+    .toolkit-detail {
+      font-size: 0.82em; color: var(--text-muted);
+    }
+
+    /* ─── Projects ─── */
+    .project-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 40px;
+      transition: all 0.3s;
+    }
+    .project-card:hover {
+      border-color: var(--accent-red);
+      box-shadow: 0 12px 40px rgba(233,69,96,0.08);
+    }
+    .project-header {
+      padding: 32px 36px 0;
+    }
+    .project-tag {
+      display: inline-block;
+      padding: 4px 12px; border-radius: 6px;
+      font-size: 0.75em; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 14px;
+    }
+    .tag-wbc { background: rgba(233,69,96,0.15); color: var(--accent-red); }
+    .tag-mlb { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
+    .project-title {
+      font-size: 1.6em; font-weight: 800; margin-bottom: 12px;
+    }
+    .project-desc {
+      color: var(--text-secondary); line-height: 1.8;
+      margin-bottom: 20px; font-size: 1em;
+    }
+    .project-methods {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 24px;
+    }
+    .method-pill {
+      background: rgba(16,185,129,0.1); color: var(--accent-green);
+      padding: 4px 14px; border-radius: 20px;
+      font-size: 0.8em; font-weight: 600;
+      border: 1px solid rgba(16,185,129,0.2);
+    }
+    .project-images {
+      padding: 0 36px 32px;
+    }
+    .project-images img {
+      width: 100%; border-radius: 10px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border);
+    }
+    .project-images .img-caption {
+      font-size: 0.85em; color: var(--text-muted);
+      line-height: 1.6; margin-bottom: 20px;
+    }
+    .project-findings {
+      padding: 0 36px 36px;
+    }
+    .finding-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .finding-card {
+      background: rgba(233,69,96,0.05);
+      border: 1px solid rgba(233,69,96,0.15);
+      border-radius: 10px; padding: 20px;
+    }
+    .finding-card.blue {
+      background: rgba(59,130,246,0.05);
+      border-color: rgba(59,130,246,0.15);
+    }
+    .finding-card.green {
+      background: rgba(16,185,129,0.05);
+      border-color: rgba(16,185,129,0.15);
+    }
+    .finding-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.8em; font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .finding-num.red { color: var(--accent-red); }
+    .finding-num.blue { color: var(--accent-blue); }
+    .finding-num.green { color: var(--accent-green); }
+    .finding-label {
+      font-size: 0.85em; color: var(--text-muted);
+    }
+
+    /* ─── Philosophy ─── */
+    .philosophy {
+      background: linear-gradient(135deg, #0f172a, #1a1a2e);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 60px;
+      text-align: center; margin-top: 60px;
+    }
+    .philosophy blockquote {
+      font-size: 1.5em; font-weight: 300;
+      font-style: italic; color: var(--text-secondary);
+      line-height: 1.8; max-width: 700px; margin: 0 auto 20px;
+    }
+    .philosophy cite {
+      font-size: 0.6em; color: var(--text-muted);
+      font-style: normal;
+    }
+
+    /* ─── Contact ─── */
+    .contact-box {
+      background: linear-gradient(135deg, var(--accent-red), #c2185b);
+      border-radius: 16px; padding: 60px;
+      text-align: center;
+    }
+    .contact-box h2 {
+      font-size: 2em; font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .contact-box p {
+      font-size: 1.1em; opacity: 0.9;
+      margin-bottom: 30px;
+    }
+    .contact-links {
+      display: flex; justify-content: center; gap: 20px;
+      flex-wrap: wrap;
+    }
+    .contact-link {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      color: white; text-decoration: none;
+      padding: 12px 28px; border-radius: 8px;
+      font-weight: 600; font-size: 0.95em;
+      transition: all 0.2s;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .contact-link:hover {
+      background: rgba(255,255,255,0.25);
+      transform: translateY(-2px);
+    }
+
+    /* ─── Footer ─── */
+    footer {
+      text-align: center; padding: 40px;
+      color: var(--text-muted); font-size: 0.85em;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.4em; }
+      .hero-stats { gap: 24px; flex-wrap: wrap; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      section { padding: 60px 20px; }
+      nav { padding: 0 20px; }
+      .nav-links { gap: 16px; }
+      .philosophy { padding: 40px 24px; }
+      .contact-box { padding: 40px 24px; }
+      .project-header, .project-images, .project-findings { padding-left: 24px; padding-right: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── Navigation ─── -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">LUKE CHUANG // BASEBALL</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#toolkit">Toolkit</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ─── Hero ─── -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-tag">Baseball Data Analyst</div>
+    <h1>I turn pitches into <span>probabilities</span>.</h1>
+    <p class="hero-sub">
+      I'm <strong>Ming-Ju (Luke) Chuang</strong> — a statistician with a lifelong passion for baseball. I combine machine learning, spatial statistics, and domain knowledge to uncover insights hidden in pitch-level data.
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">2</div>
+        <div class="hero-stat-label">WBC 2026 Analyses</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">3</div>
+        <div class="hero-stat-label">ML Models</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">1000+</div>
+        <div class="hero-stat-label">Pitches Analyzed</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── About ─── -->
+<section id="about">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div class="about-text">
+        <span class="section-label">About Me</span>
+        <h2 class="section-title">A Statistician Who Lives and Breathes Baseball</h2>
+        <p>
+          I grew up watching baseball in Taiwan, and it has shaped how I think about uncertainty, strategy, and decision-making. When <strong>Team Taiwan won the 2024 Premier 12 championship</strong>, it was a turning point — I realized I could channel both my passion for the game and my statistical training into something meaningful.
+        </p>
+        <p>
+          During the <strong>2026 World Baseball Classic</strong>, I couldn't just watch. I pulled pitch-level data, built probabilistic models, and published analyses that dissected everything from umpire bias to Shohei Ohtani's hitting profile. I want to bring this level of rigor to every game I study.
+        </p>
+        <p>
+          I hold an M.S. in Statistics and Data Science from <strong>National Tsing Hua University</strong> and will begin a <strong>Ph.D. in Statistics at the University of Michigan</strong> in Fall 2026. My undergraduate research included virtual reality training for baseball players and sports audience behavior analytics.
+        </p>
+      </div>
+      <div class="about-highlights">
+        <div class="highlight-card">
+          <div class="highlight-icon">&#9776;</div>
+          <div class="highlight-title">Statistics + Baseball</div>
+          <div class="highlight-desc">M.S. in Statistics & Data Science (NTHU). Incoming Ph.D. at University of Michigan. Undergraduate research in VR baseball training and sports analytics.</div>
+        </div>
+        <div class="highlight-card">
+          <div class="highlight-icon">&#9917;</div>
+          <div class="highlight-title">Player & Team Leader</div>
+          <div class="highlight-desc">Captain of NTHU Statistics Softball & Baseball Team. Years of playing experience that inform how I interpret the game's data.</div>
+        </div>
+        <div class="highlight-card">
+          <div class="highlight-icon">&#127942;</div>
+          <div class="highlight-title">Team Taiwan Believer</div>
+          <div class="highlight-desc">Inspired by the 2024 Premier 12 championship and the incredible 2026 WBC performances against Czech Republic and South Korea. I believe we'll break into the top 8 soon.</div>
+        </div>
+        <div class="highlight-card">
+          <div class="highlight-icon">&#128218;</div>
+          <div class="highlight-title">Research Background</div>
+          <div class="highlight-desc">Published research on missing data methods. Experienced with causal inference, ensemble methods, and spatial statistics — all applicable to sports analytics.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Toolkit ─── -->
+<section id="toolkit" style="background: #0d1117;">
+  <div class="section-inner">
+    <span class="section-label">Toolkit</span>
+    <h2 class="section-title">How I Analyze the Game</h2>
+    <p class="section-desc">From raw pitch data to actionable insights — here's the analytical toolkit I bring to baseball.</p>
+    <div class="toolkit-grid">
+      <div class="toolkit-item">
+        <div class="toolkit-name">Python & R</div>
+        <div class="toolkit-detail">Data wrangling, modeling, visualization</div>
+      </div>
+      <div class="toolkit-item">
+        <div class="toolkit-name">Random Forest</div>
+        <div class="toolkit-detail">P(swing) & P(hit|swing) modeling</div>
+      </div>
+      <div class="toolkit-item">
+        <div class="toolkit-name">Gradient Boosting</div>
+        <div class="toolkit-detail">GBM for pitch outcome prediction</div>
+      </div>
+      <div class="toolkit-item">
+        <div class="toolkit-name">Kernel Density</div>
+        <div class="toolkit-detail">Strike zone & hit probability heatmaps</div>
+      </div>
+      <div class="toolkit-item">
+        <div class="toolkit-name">SHAP Analysis</div>
+        <div class="toolkit-detail">Feature importance & pitch explanation</div>
+      </div>
+      <div class="toolkit-item">
+        <div class="toolkit-name">Spatial Statistics</div>
+        <div class="toolkit-detail">2D density estimation & contour mapping</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Projects ─── -->
+<section id="projects">
+  <div class="section-inner">
+    <span class="section-label">Projects</span>
+    <h2 class="section-title">Case Studies</h2>
+    <p class="section-desc">Real analyses from real games — where data meets the diamond.</p>
+
+    <!-- Project 1: Japan -->
+    <div class="project-card">
+      <div class="project-header">
+        <span class="project-tag tag-wbc">WBC 2026</span>
+        <h3 class="project-title">Dissecting the 2nd Inning Meltdown: Taiwan vs. Japan</h3>
+        <p class="project-desc">
+          Japan scored 10 runs in the 2nd inning, including a grand slam by Shohei Ohtani. Was starter Hao-Chun Cheng truly to blame? I used pitch-level data and ML models trained on Ohtani's entire 2025 MLB season to answer two questions: <strong>did Cheng pitch poorly?</strong> and <strong>could he have pitched Ohtani better?</strong>
+        </p>
+        <div class="project-methods">
+          <span class="method-pill">Random Forest</span>
+          <span class="method-pill">GBM</span>
+          <span class="method-pill">KDE Heatmaps</span>
+          <span class="method-pill">SHAP</span>
+          <span class="method-pill">Pitch Strategy Optimization</span>
+        </div>
+      </div>
+      <div class="project-images">
+        <img src="images/ohtani_kde_heatmap.png" alt="Ohtani KDE Heatmaps">
+        <p class="img-caption">KDE-based rate estimates from Ohtani's 2025 MLB season. Rows: pitch categories (Overall, Fastball, Breaking, Offspeed). Columns: P(swing|loc), P(hit|swing,loc), P(hit|loc). Red cross = Cheng's grand slam curveball location.</p>
+        <img src="images/ohtani_pitch_strategy_decomp.png" alt="Optimal Pitch Strategy">
+        <p class="img-caption">Optimal pitching strategy conditioned on Cheng's pitch profile. Red cross = actual location; blue star = model-recommended optimal location for each pitch type.</p>
+      </div>
+      <div class="project-findings">
+        <div class="finding-grid">
+          <div class="finding-card">
+            <div class="finding-num red">~9%</div>
+            <div class="finding-label">P(hit|pitch) for the grand slam curveball — it was genuinely a good pitch</div>
+          </div>
+          <div class="finding-card blue">
+            <div class="finding-num blue">2,483 rpm</div>
+            <div class="finding-label">Spin rate — the #1 SHAP factor suppressing P(hit|swing)</div>
+          </div>
+          <div class="finding-card green">
+            <div class="finding-num green">3.6%</div>
+            <div class="finding-label">Optimal P(hit) with a low-away fastball — the model's best recommendation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project 2: Australia -->
+    <div class="project-card">
+      <div class="project-header">
+        <span class="project-tag tag-wbc">WBC 2026</span>
+        <h3 class="project-title">Umpire Strike Zone Bias: Taiwan vs. Australia</h3>
+        <p class="project-desc">
+          After Taiwan's dramatic game against Australia, I reconstructed the home plate umpire's practical strike zone using kernel density estimation on 142 called pitches. The results revealed a <strong>striking asymmetry</strong> — the zone expanded dramatically when Taiwan batted and collapsed when Australia batted.
+        </p>
+        <div class="project-methods">
+          <span class="method-pill">2D Kernel Density Estimation</span>
+          <span class="method-pill">Strike Zone Contour Analysis</span>
+          <span class="method-pill">Differential Heatmap</span>
+          <span class="method-pill">Accuracy Classification</span>
+        </div>
+      </div>
+      <div class="project-images">
+        <img src="images/strike_zone_accuracy.png" alt="Strike Zone Accuracy">
+        <p class="img-caption">KDE-estimated practical strike zone (shaded) vs. rulebook zone (dashed). Left: expanded zone when Taiwan bats. Right: collapsed zone when Australia bats.</p>
+        <img src="images/strike_zone_diff.png" alt="Strike Zone Difference Map">
+        <p class="img-caption">Difference map: red = higher strike probability when Taiwan bats; blue = when Australia bats. Red dominates, confirming systematic bias.</p>
+      </div>
+      <div class="project-findings">
+        <div class="finding-grid">
+          <div class="finding-card">
+            <div class="finding-num red">77%</div>
+            <div class="finding-label">Umpire accuracy when Taiwan batted — well below professional standards</div>
+          </div>
+          <div class="finding-card blue">
+            <div class="finding-num blue">87%</div>
+            <div class="finding-label">Umpire accuracy when Australia batted — notably higher</div>
+          </div>
+          <div class="finding-card green">
+            <div class="finding-num green">14 vs 5</div>
+            <div class="finding-label">Generous strikes: Taiwan faced nearly 3x more bad calls against them</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Philosophy -->
+    <div class="philosophy">
+      <blockquote>
+        "Baseball is full of probability battles. A pitch with a 9% hit probability gets crushed for a grand slam... You can only say that Ohtani is simply that incredible."
+        <br><cite>— from my Taiwan vs. Japan analysis</cite>
+      </blockquote>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── Contact ─── -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="contact-box">
+      <h2>Let's Talk Baseball & Data</h2>
+      <p>Looking for a passionate analyst who can turn pitch data into strategic insights? Let's connect.</p>
+      <div class="contact-links">
+        <a href="mailto:zhuang890212@gmail.com" class="contact-link">Email Me</a>
+        <a href="https://lukechuang890212.github.io" class="contact-link" target="_blank">Academic Portfolio</a>
+        <a href="https://github.com/LukeChuang890212" class="contact-link" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 Ming-Ju (Luke) Chuang. Built with passion for the game.</p>
+</footer>
+
+</body>
+</html>
